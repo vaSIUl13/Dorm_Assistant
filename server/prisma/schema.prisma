@@ -1,0 +1,182 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+datasource db {
+  provider  = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum UserRoleType {
+  STUDENT
+  COMMANDANT
+  STAFF
+  OPERATION_DETACHMENT
+}
+
+enum RequestCategory {
+  PLUMBING
+  ELECTRICAL
+  FURNITURE
+  HEATING
+  OTHER
+}
+
+enum RequestPriority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum RequestStatus {
+  PENDING
+  IN_PROGRESS
+  RESOLVED
+  CANCELLED
+}
+
+enum NotificationType {
+  REQUEST_STATUS_UPDATED
+  NEW_ANNOUNCEMENT
+  LAUNDRY_REMINDER
+  PENALTY_ASSIGNED
+  GENERAL
+}
+
+model User {
+  id            Int            @id @default(autoincrement())
+  firstName     String         @map("first_name")
+  lastName      String         @map("last_name")
+  email         String         @unique
+  passwordHash  String         @map("password_hash")
+  penaltyPoints Int            @default(0) @map("penalty_points")
+  roomId        Int?           @map("room_id")
+  createdAt     DateTime       @default(now()) @map("created_at")
+
+  room          Room?          @relation(fields: [roomId], references: [id])
+  roles         UserRole[]
+  createdRequests  MaintenanceRequest[] @relation("AuthorRequests")
+  assignedRequests MaintenanceRequest[] @relation("AssigneeRequests")
+  comments      RequestComment[]
+  announcements Announcement[]
+  notifications Notification[]
+
+  @@map("users")
+}
+
+model UserRole {
+  id     Int          @id @default(autoincrement())
+  userId Int          @map("user_id")
+  role   UserRoleType
+
+  user   User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, role])
+  @@map("user_roles")
+}
+
+model Dormitory {
+  id            Int            @id @default(autoincrement())
+  dormNumber    Int            @map("dorm_number")
+  address       String
+  capacity      Int
+
+  rooms         Room[]
+  announcements Announcement[]
+
+  @@map("dormitories")
+}
+
+model Room {
+  id          Int                  @id @default(autoincrement())
+  roomNumber  Int                  @map("room_number")
+  floor       Int
+  capacity    Int
+  dormitoryId Int                  @map("dormitory_id")
+
+  dormitory   Dormitory            @relation(fields: [dormitoryId], references: [id], onDelete: Cascade)
+  users       User[]
+  requests    MaintenanceRequest[]
+
+  @@map("rooms")
+}
+
+model MaintenanceRequest {
+  id          Int             @id @default(autoincrement())
+  title       String
+  description String          @db.Text
+  category    RequestCategory
+  priority    RequestPriority @default(LOW)
+  status      RequestStatus   @default(PENDING)
+  authorId    Int             @map("author_id")
+  assigneeId  Int?            @map("assignee_id")
+  roomId      Int             @map("room_id")
+  createdAt   DateTime        @default(now()) @map("created_at")
+  updatedAt   DateTime        @updatedAt @map("updated_at")
+
+  author      User            @relation("AuthorRequests", fields: [authorId], references: [id])
+  assignee    User?           @relation("AssigneeRequests", fields: [assigneeId], references: [id])
+  room        Room            @relation(fields: [roomId], references: [id])
+  media       RequestMedia[]
+  comments    RequestComment[]
+
+  @@map("maintenance_requests")
+}
+
+model RequestMedia {
+  id        Int                @id @default(autoincrement())
+  requestId Int                @map("request_id")
+  fileUrl   String             @map("file_url")
+  createdAt DateTime           @default(now()) @map("created_at")
+
+  request   MaintenanceRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+
+  @@map("request_media")
+}
+
+model RequestComment {
+  id        Int                @id @default(autoincrement())
+  requestId Int                @map("request_id")
+  authorId  Int                @map("author_id")
+  text      String             @db.Text
+  createdAt DateTime           @default(now()) @map("created_at")
+
+  request   MaintenanceRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  author    User               @relation(fields: [authorId], references: [id])
+
+  @@map("request_comments")
+}
+
+model Announcement {
+  id          Int       @id @default(autoincrement())
+  dormitoryId Int       @map("dormitory_id")
+  authorId    Int       @map("author_id")
+  title       String
+  content     String    @db.Text
+  targetFloor Int?      @map("target_floor")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  dormitory   Dormitory @relation(fields: [dormitoryId], references: [id], onDelete: Cascade)
+  author      User      @relation(fields: [authorId], references: [id])
+
+  @@map("announcements")
+}
+
+model Notification {
+  id        Int              @id @default(autoincrement())
+  userId    Int              @map("user_id")
+  type      NotificationType
+  title     String
+  message   String           @db.Text
+  isRead    Boolean          @default(false) @map("is_read")
+  createdAt DateTime         @default(now()) @map("created_at")
+
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}
