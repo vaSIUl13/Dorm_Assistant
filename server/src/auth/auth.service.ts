@@ -1,4 +1,8 @@
-import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
@@ -64,11 +68,17 @@ export class AuthService {
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(payload, {
         secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
-        expiresIn: this.configService.get<string>('JWT_ACCESS_EXPIRES_IN', '15m') as any,
+        expiresIn: this.configService.get<string>(
+          'JWT_ACCESS_EXPIRES_IN',
+          '15m',
+        ) as any,
       }),
       this.jwtService.signAsync(payload, {
         secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
-        expiresIn: this.configService.get<string>('JWT_REFRESH_EXPIRES_IN', '7d') as any,
+        expiresIn: this.configService.get<string>(
+          'JWT_REFRESH_EXPIRES_IN',
+          '7d',
+        ) as any,
       }),
     ]);
 
@@ -80,31 +90,34 @@ export class AuthService {
 
   async login(LoginDto: LoginDto) {
     const user = await this.prismaService.user.findUnique({
-        where: {email: LoginDto.email},
-        include: {
-            roles: true,
-        }
-    })
+      where: { email: LoginDto.email },
+      include: {
+        roles: true,
+      },
+    });
     if (!user) {
-        throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException('Invalid credentials');
     }
 
-    const isPasswordValid = await bcrypt.compare(LoginDto.password, user.passwordHash);
+    const isPasswordValid = await bcrypt.compare(
+      LoginDto.password,
+      user.passwordHash,
+    );
     if (!isPasswordValid) {
-        throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException('Invalid credentials');
     }
 
     const tokens = await this.generateTokens(
-        user.id,
-        user.email,
-        user.roles.map((r) => r.role)
-    )
+      user.id,
+      user.email,
+      user.roles.map((r) => r.role),
+    );
 
     const { passwordHash: _, ...userWithoutPassword } = user;
 
     return {
-        user: userWithoutPassword,
-        tokens,
-    }
+      user: userWithoutPassword,
+      tokens,
+    };
   }
 }

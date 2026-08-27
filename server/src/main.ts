@@ -18,9 +18,9 @@ async function bootstrap() {
   app.enableCors();
 
   const config = new DocumentBuilder()
-    .setTitle("DormAssistantAPI")
-    .setDescription("API for DormAssistant")
-    .setVersion("1.0")
+    .setTitle('DormAssistantAPI')
+    .setDescription('API for DormAssistant')
+    .setVersion('1.0')
     .addBearerAuth()
     .build();
 
