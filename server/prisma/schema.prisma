@@ -94,7 +94,7 @@ model Dormitory {
 
 model Room {
   id          Int                  @id @default(autoincrement())
-  roomNumber  Int                  @map("room_number")
+  roomNumber  String               @map("room_number")
   floor       Int
   capacity    Int
   dormitoryId Int                  @map("dormitory_id")
