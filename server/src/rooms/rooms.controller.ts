@@ -24,7 +24,7 @@ export class RoomsController {
   constructor(private readonly roomsService: RoomsService) {}
 
   @Post()
-  @Roles(UserRoleType.COMMANDANT)
+  @Roles(UserRoleType.ADMIN, UserRoleType.COMMANDANT)
   @ApiOperation({ summary: 'Create a new room' })
   async createRoom(@Body() dto: CreateRoomDto) {
     return this.roomsService.createRoom(dto);
@@ -43,7 +43,7 @@ export class RoomsController {
   }
 
   @Post(':id/assign-student')
-  @Roles(UserRoleType.COMMANDANT)
+  @Roles(UserRoleType.ADMIN, UserRoleType.COMMANDANT)
   @ApiOperation({ summary: 'Assign a student to the room' })
   async assignStudent(
     @Param('id', ParseIntPipe) id: number,
