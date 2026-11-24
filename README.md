@@ -1,42 +1,68 @@
 # Dorm Assistant
 
-Сервіс для керування гуртожитками: заявки на ремонт, оголошення, штрафні бали та сповіщення для студентів і персоналу.
+A web application for convenient dormitory management. It helps students and dormitory staff manage maintenance requests, announcements, penalty points, and notifications in one place.
 
-## Ролі користувачів
+## User roles
 
-| Роль | Опис |
-|------|------|
-| **ADMIN** | Системний адміністратор. Створює гуртожитки, має доступ до керування на рівні всієї системи |
-| **STUDENT** | Житель гуртожитку. Створює заявки, переглядає оголошення, отримує сповіщення |
-| **COMMANDANT** | Комендант. Керує гуртожитком, призначає виконавців, публікує оголошення, нараховує штрафи |
-| **STAFF** | Технічний персонал. Бере заявки в роботу, оновлює статус, залишає коментарі |
-| **OPERATION_DETACHMENT** | Оперативний загін. Працює з критичними / терміновими заявками |
+| Role | Description |
+| --- | --- |
+| **ADMIN** | System administrator who creates dormitories and manages the system. |
+| **STUDENT** | Dormitory resident who submits maintenance requests, views announcements, and receives notifications. |
+| **COMMANDANT** | Dormitory manager who assigns work, publishes announcements, and issues penalties. |
+| **STAFF** | Maintenance staff who handle requests, update their status, and leave comments. |
+| **OPERATION_DETACHMENT** | Response team that handles critical and urgent requests. |
 
-Користувач може мати кілька ролей одночасно.
+A user can have multiple roles at the same time.
 
-## Основні можливості
+## Features
 
-### Гуртожитки та кімнати
-- Облік гуртожитків (номер, адреса, місткість)
-- Кімнати з поверхом і прив’язкою до гуртожитку
-- Проживання студентів у кімнатах
+### Dormitories and rooms
+- Manage dormitories, including their number, address, and capacity.
+- Manage rooms by floor and dormitory.
+- Track students living in each room.
 
-### Заявки на обслуговування
-- Категорії: сантехніка, електрика, меблі, опалення, інше
-- Пріоритети: low → critical
-- Статуси: pending → in progress → resolved / cancelled
-- Призначення виконавця, вкладення (фото/файли), коментарі
+### Maintenance requests
+- Categories: plumbing, electrical, furniture, heating, and other.
+- Priorities: low, medium, high, and critical.
+- Statuses: pending, in progress, resolved, and cancelled.
+- Assign staff, attach photos or files, and add comments.
 
-### Оголошення
-- Публікація для всього гуртожитку або конкретного поверху
+### Announcements
+- Publish announcements for an entire dormitory or a specific floor.
 
-### Штрафи та сповіщення
-- Нарахування штрафних балів студентам
-- Сповіщення про зміну статусу заявки, нові оголошення, нагадування про пральню, штрафи
+### Penalties and notifications
+- Assign penalty points to students.
+- Notify users about request status updates, new announcements, laundry reminders, and penalties.
 
-## Стек
+## Tech stack
 
-| Частина | Технології |
-|---------|------------|
-| **Backend** | NestJS, Prisma 7, PostgreSQL, JWT, Swagger |
-| **Frontend** | Next.js, React, Tailwind CSS |
+| Area | Technologies |
+| --- | --- |
+| **Frontend** | <img src="https://cdn.simpleicons.org/nextdotjs/000000" alt="Next.js" width="18" height="18"> Next.js · <img src="https://cdn.simpleicons.org/react/61DAFB" alt="React" width="18" height="18"> React · <img src="https://cdn.simpleicons.org/tailwindcss/06B6D4" alt="Tailwind CSS" width="18" height="18"> Tailwind CSS · <img src="https://cdn.simpleicons.org/typescript/3178C6" alt="TypeScript" width="18" height="18"> TypeScript |
+| **Backend** | <img src="https://cdn.simpleicons.org/nestjs/E0234E" alt="NestJS" width="18" height="18"> NestJS · <img src="https://cdn.simpleicons.org/prisma/2D3748" alt="Prisma" width="18" height="18"> Prisma · <img src="https://cdn.simpleicons.org/postgresql/4169E1" alt="PostgreSQL" width="18" height="18"> PostgreSQL · JWT · Swagger |
+
+## Run locally
+
+**Requirements:** Node.js and a PostgreSQL database.
+
+1. Clone the repository and configure the backend database connection. In `server/`, create a `.env` file and set `DIRECT_URL` to your PostgreSQL connection string (required by Prisma).
+2. In one terminal, install dependencies and start the backend:
+
+   ```bash
+   cd server
+   npm install
+   npx prisma migrate deploy
+   npm run start:dev
+   ```
+
+   The API runs at `http://localhost:4000`; Swagger docs are at `http://localhost:4000/docs`.
+
+3. In a second terminal, install dependencies and start the frontend:
+
+   ```bash
+   cd client
+   npm install
+   npm run dev
+   ```
+
+   Open `http://localhost:3000` in your browser.
