@@ -39,7 +39,9 @@ A user can have multiple roles at the same time.
 | Area | Technologies |
 | --- | --- |
 | **Frontend** | <img src="https://cdn.simpleicons.org/nextdotjs/000000" alt="Next.js" width="18" height="18"> Next.js · <img src="https://cdn.simpleicons.org/react/61DAFB" alt="React" width="18" height="18"> React · <img src="https://cdn.simpleicons.org/tailwindcss/06B6D4" alt="Tailwind CSS" width="18" height="18"> Tailwind CSS · <img src="https://cdn.simpleicons.org/typescript/3178C6" alt="TypeScript" width="18" height="18"> TypeScript |
-| **Backend** | <img src="https://cdn.simpleicons.org/nestjs/E0234E" alt="NestJS" width="18" height="18"> NestJS · <img src="https://cdn.simpleicons.org/prisma/2D3748" alt="Prisma" width="18" height="18"> Prisma · <img src="https://cdn.simpleicons.org/postgresql/4169E1" alt="PostgreSQL" width="18" height="18"> PostgreSQL · JWT · Swagger |
+| **Backend** | <img src="https://cdn.simpleicons.org/nestjs/E0234E" alt="NestJS" width="18" height="18"> NestJS |
+| **Database** | <img src="https://cdn.simpleicons.org/prisma/2D3748" alt="Prisma" width="18" height="18"> Prisma · <img src="https://cdn.simpleicons.org/postgresql/4169E1" alt="PostgreSQL" width="18" height="18"> PostgreSQL |
+| **Tools** | Swagger |
 
 ## Run locally
 
